@@ -1,0 +1,19 @@
+[general]
+name=Conduit Dynamic Buffer
+qgisMinimumVersion=3.0
+description=Variable width buffer
+version=1
+author=Michel Cueva & DTC
+email=epacursos@epa-edu.com
+about=Generates variable width buffers from conduits exported from InfoWorks ICM Ultimate. Manually select the field from which the buffer is created, including wall thicknesses and excavation width. Developed for the Peruvian Water School (EPA).
+tracker=https://github.com/hidroclic/conduit-buffer
+repository=https://github.com/SDTC08/conduit-dynamic-buffer
+hasProcessingProvider=yes
+changelog=Version 1
+tags=buffer,hydraulic,conduit,infoworks,icm,excavation,walls
+homepage=https://github.com/SDTC08/conduit-dynamic-buffer
+category=Vector
+icon=icon.png
+experimental=False
+deprecated=False
+server=False
