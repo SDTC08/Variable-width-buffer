@@ -1,4 +1,4 @@
-# Conduit Dynamic Buffer Plugin for QGIS
+# Variable width buffer for QGIS
 
 QGIS plugin for generating variable width buffers from hydraulic network conduits exported from InfoWorks ICM Ultimate.
 
