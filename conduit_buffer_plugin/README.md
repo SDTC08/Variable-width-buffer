@@ -1,138 +1,119 @@
-# Variable width buffer Plugin for QGIS
+# Variable Width Buffer Plugin para QGIS
 
-QGIS plugin for generating variable width buffers from hydraulic network conduits exported from InfoWorks ICM Ultimate.
+Plugin de QGIS para generar buffers dinámicos alrededor de conductos de redes hidráulicas basados en sus dimensiones (ancho/diámetro).
 
-![EPA Logo](conduit_buffer_plugin/icon.png)
+## Características
 
-## Features
+- ✅ Genera buffers dinámicos basados en las dimensiones reales de cada conducto
+- ✅ Detecta automáticamente si el conducto es circular o rectangular
+- ✅ Soporta dimensiones en milímetros o metros
+- ✅ Calcula el radio del buffer como mitad del ancho/diámetro
+- ✅ Factor de ajuste del buffer (multiplicador)
+- ✅ Añade campos con información de tipo de sección, dimensiones, longitud y área
+- ✅ Integrado en el panel de Processing de QGIS
 
-- ✅ Generates variable width buffers based on actual conduit dimensions
-- ✅ Automatically detects circular vs rectangular sections
-- ✅ Supports dimensions in millimeters or meters
-- ✅ Generates 4 output layers:
-  - **Conduits**: Polygon buffers of the conduit
-  - **Walls**: Wall polygons from conduit edge outward
-  - **Excavation**: Excavation buffers from conduit edge (with hole)
-  - **Total Width**: Complete solid polygon (no hole)
-- ✅ Adds fields with section type, dimensions, length and area information
-- ✅ Integrated into QGIS Processing panel
+## Instalación
 
-## Installation
+### Método 1: Instalación Manual
 
-### Method 1: Manual Installation
-
-1. Download the plugin (`conduit_buffer_plugin` folder)
-2. Copy the complete folder to your QGIS plugins directory:
-   - **Windows**: `C:\Users\[username]\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\`
+1. Descarga el plugin (carpeta `conduit_buffer_plugin`)
+2. Copia la carpeta completa a tu directorio de plugins de QGIS:
+   - **Windows**: `C:\Users\[usuario]\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\`
    - **macOS**: `~/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/`
    - **Linux**: `~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/`
 
-3. Open QGIS
-4. Go to **Plugins → Manage and Install Plugins**
-5. In the **Installed** tab, search for "Conduit Dynamic Buffer"
-6. Activate the plugin by checking the box
+3. Abre QGIS
+4. Ve a **Complementos → Administrar e instalar complementos**
+5. En la pestaña **Instalados**, busca "Variable Width Buffer"
+6. Activa el plugin marcando la casilla
 
-### Method 2: Install from ZIP
+### Método 2: Instalación desde ZIP
 
-1. Compress the `conduit_buffer_plugin` folder into a ZIP file
-2. In QGIS, go to **Plugins → Manage and Install Plugins**
-3. Select **Install from ZIP**
-4. Select the downloaded ZIP file
-5. Click **Install Plugin**
+1. Comprime la carpeta `conduit_buffer_plugin` en un archivo ZIP
+2. En QGIS, ve a **Complementos → Administrar e instalar complementos**
+3. Selecciona **Instalar desde ZIP**
+4. Selecciona el archivo ZIP descargado
+5. Haz clic en **Instalar complemento**
 
-## Usage
+## Uso
 
-### From Processing Panel
+### Desde el Panel de Processing
 
-1. Open the **Processing Panel** (Processing → Toolbox)
-2. Search for **"Conduit Buffer"** or **"Dynamic Conduit Buffer"**
-3. Expand the **Hydraulics** group
-4. Double click on **Dynamic Conduit Buffer**
+1. Abre el **Panel de Processing** (Procesado → Caja de herramientas)
+2. Busca **"Conduit Buffer"** o **"Buffer Dinámico de Conductos"**
+3. Expande el grupo **Hidráulica**
+4. Doble clic en **Buffer Dinámico de Conductos**
 
-### Parameters
+### Parámetros
 
-- **Input conduit layer**: Select your line layer with conduits
-- **Width field**: Field containing conduit width (select `condwidth`)
-- **Dimension unit**: Select if your data is in millimeters or meters
-- **Wall thickness**: Wall thickness in meters (default: 0.15m)
-- **Excavation width**: Excavation width in meters (default: 0.5m)
+- **Capa de conductos**: Selecciona tu capa de líneas con los conductos
+- **Campo de ancho**: Campo que contiene el ancho del conducto
+- **Campo de alto/diámetro**: Campo que contiene la altura o diámetro
+- **Unidad de las dimensiones**: Selecciona si tus datos están en milímetros o metros
+- **Factor de buffer**: Multiplicador para ajustar el tamaño (1.0 = tamaño normal)
+- **Buffers de salida**: Especifica dónde guardar el resultado
 
-### Example
+### Ejemplo
 
-If you have InfoWorks conduits with:
+Si tienes conductos de InfoWorks con:
 - `condwidth` = 1800 (mm)
 - `condheight` = 600 (mm)
 
-The plugin will generate:
-- **Conduit**: 1.8m wide polygon
-- **Walls**: 0.15m thick on each side
-- **Excavation**: 0.5m wide from conduit edge
-- **Total Width**: Complete solid polygon
+El plugin generará un buffer rectangular con radio de 900mm (0.9m) del ancho.
 
-If the conduit is circular with:
+Si el conducto es circular con:
 - `condwidth` = 600 (mm)
 - `condheight` = 600 (mm)
 
-The plugin will generate a circular buffer with 0.6m diameter.
+El plugin generará un buffer circular con radio de 300mm (0.3m).
 
-## Output Fields
+## Campos de Salida
 
-### Conduits Layer
-- `id`: Conduit identifier
-- `tipo_secc`: Section type ("Circular" or "Rectangular")
-- `ancho_mm`: Width in millimeters
-- `alto_mm`: Height in millimeters
-- `diam_mm`: Diameter in millimeters (for circular sections)
-- `longitud_m`: Length in meters
+El plugin añade los siguientes campos a la capa de salida:
 
-### Walls Layer
-- `id`: Conduit identifier
-- `espesor_m`: Wall thickness in meters
+- `TIPO_SECC`: Tipo de sección ("Circular" o "Rectangular")
+- `ANCHO_MM`: Ancho en milímetros
+- `ALTO_MM`: Alto/diámetro en milímetros
+- `DIM_M`: Dimensión principal en metros
+- `BUFFER_M`: Radio del buffer aplicado en metros
+- `LONG_M`: Longitud del conducto en metros
+- `AREA_M2`: Área del buffer en metros cuadrados
+- `DESCRIPCION`: Descripción legible (ej: "Ø 600 mm" o "1800 x 600 mm")
 
-### Excavation Layer
-- `id`: Conduit identifier
-- `ancho_m`: Excavation width in meters
+## Casos de Uso
 
-### Total Width Layer
-- `id`: Conduit identifier
-- `ancho_total_m`: Total width in meters
+- Visualización de redes de alcantarillado
+- Análisis de redes de agua potable
+- Planificación de excavaciones
+- Cálculo de áreas de afectación
+- Modelado hidráulico de redes de drenaje
 
-## Use Cases
+## Requisitos
 
-- Sewer network visualization
-- Drinking water network analysis
-- Excavation planning
-- Impact area calculation
-- Hydraulic drainage network modeling
+- QGIS 3.0 o superior
+- Python 3.6 o superior
 
-## Requirements
-
-- QGIS 3.0 or higher
-- Python 3.6 or higher
-- InfoWorks ICM conduit shapefiles
-
-## Author
+## Autor
 
 **Michel Cueva & DTC**  
-**Escuela Peruana del Agua (EPA)**  
-Lima, Peru
+**EPA - Escuela Peruana del Agua**
+- Empresa especializada en geomática, modelado hidráulico y diseño CAD
+- Lima, Perú
 
-## License
+## Licencia
 
-This plugin is open source and available under the MIT License.
+Este plugin es de código abierto y está disponible bajo licencia GPL v3.
 
-## Support
+## Soporte
 
-To report issues or request new features, please contact epacursos@epa-edu.com or open an issue on this repository.
+Para reportar problemas o solicitar nuevas características, por favor contacta a epacursos@epa-edu.com
 
 ## Changelog
 
-### Version 1.0 (2026-01-27)
-- Initial public release
-- Variable width buffer generation
-- Automatic section type detection
-- Support for mm and meters
-- Wall generation
-- Excavation buffer
-- Total width output
-- Calculated statistics fields
+### Versión 1.0 (2026-01-27)
+- Primera versión pública
+- Generación de buffers dinámicos
+- Detección automática de tipo de sección
+- Soporte para mm y metros
+- Factor de ajuste de buffer
+- Campos calculados de estadísticas

@@ -1,17 +1,17 @@
 [general]
-name=Variable width buffer
+name=Variable-width-buffer
 qgisMinimumVersion=3.0
-description=Variable width buffer
-version=1
-author=Michel Cueva & DTC
+description=VARIABLE WIDTH BUFFER
+version=2
+author=Michel Cueva & DTC - EPA - Escuela Peruana del Agua
 email=epacursos@epa-edu.com
-about=Generates variable width buffers from conduits exported from InfoWorks ICM Ultimate. Manually select the field from which the buffer is created, including wall thicknesses and excavation width. Developed for the Peruvian Water School (EPA).
-tracker=https://github.com/SDTC08/conduit-dynamic-buffer
-repository=https://github.com/SDTC08/conduit-dynamic-buffer
+about=Generates variable width buffers from conduits exported from InfoWorks ICM Ultimate. Manually select the field from which the buffer is created, including wall thicknesses and excavation width. It also allows you to create a 3D face. Developed for the Peruvian Water School (EPA).
+tracker=https://github.com/SDTC08/Variable-width-buffer
+repository=https://github.com/SDTC08/Variable-width-buffer
 hasProcessingProvider=yes
-changelog=Version 1
-tags=buffer,hydraulic,conduit,infoworks,icm,excavation,walls
-homepage=https://github.com/SDTC08/conduit-dynamic-buffer
+changelog=Version 2 - Added 3D DXF export with 3DFACE surfaces for Civil 3D
+tags=buffer,hydraulic,conduit,infoworks,icm,excavation,walls,dxf,civil3d,3dface,surface
+homepage=https://github.com/SDTC08/Variable-width-buffer
 category=Vector
 icon=icon.png
 experimental=False

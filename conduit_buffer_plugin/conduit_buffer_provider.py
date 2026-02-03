@@ -10,7 +10,7 @@ from .conduit_buffer_algorithm import ConduitBufferAlgorithm
 
 
 class ConduitBufferProvider(QgsProcessingProvider):
-    """Processing Provider for Conduit Dynamic Buffer"""
+    """Processing Provider for Variable Width Buffer"""
 
     def __init__(self):
         QgsProcessingProvider.__init__(self)
@@ -25,11 +25,11 @@ class ConduitBufferProvider(QgsProcessingProvider):
 
     def name(self):
         """Return the provider name"""
-        return 'Conduit Buffer'
+        return 'Variable Width Buffer'
 
     def longName(self):
         """Return the full provider name"""
-        return 'Conduit Dynamic Buffer'
+        return 'Variable Width Buffer'
 
     def icon(self):
         """Return the provider icon"""

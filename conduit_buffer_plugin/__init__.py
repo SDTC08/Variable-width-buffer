@@ -1,5 +1,5 @@
 """
-Conduit Dynamic Buffer Plugin
+Variable Width Buffer Plugin
 """
 
 def classFactory(iface):

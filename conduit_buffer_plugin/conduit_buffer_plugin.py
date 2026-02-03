@@ -1,5 +1,5 @@
 """
-Conduit Dynamic Buffer Plugin
+Variable Width Buffer Plugin
 Genera buffers dinámicos para conductos basados en dimensiones
 """
 
@@ -30,7 +30,7 @@ class ConduitBufferPlugin:
         
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Conduit Dynamic Buffer')
+        self.menu = self.tr(u'&Variable Width Buffer')
         
         # Create the provider
         self.provider = None
