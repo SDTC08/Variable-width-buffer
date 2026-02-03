@@ -1,119 +1,125 @@
-# Variable Width Buffer Plugin para QGIS
+# Variable-width-buffer Plugin for QGIS
 
-Plugin de QGIS para generar buffers dinámicos alrededor de conductos de redes hidráulicas basados en sus dimensiones (ancho/diámetro).
+QGIS plugin to generate dynamic buffers around hydraulic network conduits based on their dimensions (width/diameter). It also allows you to export 3D faces for Civil 3D.
 
-## Características
+## Features
 
-- ✅ Genera buffers dinámicos basados en las dimensiones reales de cada conducto
-- ✅ Detecta automáticamente si el conducto es circular o rectangular
-- ✅ Soporta dimensiones en milímetros o metros
-- ✅ Calcula el radio del buffer como mitad del ancho/diámetro
-- ✅ Factor de ajuste del buffer (multiplicador)
-- ✅ Añade campos con información de tipo de sección, dimensiones, longitud y área
-- ✅ Integrado en el panel de Processing de QGIS
+- ✅ Generates dynamic buffers based on the real dimensions of each conduit
+- ✅ Automatically detects if the conduit is circular or rectangular
+- ✅ Supports dimensions in millimeters or meters
+- ✅ Calculates buffer radius as half the width/diameter
+- ✅ Generates wall and excavation polygons with configurable widths
+- ✅ Optional 3D DXF export with 3DFACE entities for Civil 3D
+- ✅ Integrated in the QGIS Processing panel
 
-## Instalación
+## Installation
 
-### Método 1: Instalación Manual
+### Method 1: Manual Installation
 
-1. Descarga el plugin (carpeta `conduit_buffer_plugin`)
-2. Copia la carpeta completa a tu directorio de plugins de QGIS:
-   - **Windows**: `C:\Users\[usuario]\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\`
+1. Download the plugin folder (`conduit_buffer_plugin`)
+2. Copy the full folder to your QGIS plugins directory:
+   - **Windows**: `C:\Users\[username]\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\`
    - **macOS**: `~/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins/`
    - **Linux**: `~/.local/share/QGIS/QGIS3/profiles/default/python/plugins/`
+3. Open QGIS
+4. Go to **Plugins → Manage and Install Plugins**
+5. In the **Installed** tab, find "Variable-width-buffer"
+6. Enable the plugin by checking the box
 
-3. Abre QGIS
-4. Ve a **Complementos → Administrar e instalar complementos**
-5. En la pestaña **Instalados**, busca "Variable Width Buffer"
-6. Activa el plugin marcando la casilla
+### Method 2: Install from ZIP
 
-### Método 2: Instalación desde ZIP
+1. Compress the `conduit_buffer_plugin` folder into a ZIP file
+2. In QGIS, go to **Plugins → Manage and Install Plugins**
+3. Select **Install from ZIP**
+4. Select the downloaded ZIP file
+5. Click **Install plugin**
 
-1. Comprime la carpeta `conduit_buffer_plugin` en un archivo ZIP
-2. En QGIS, ve a **Complementos → Administrar e instalar complementos**
-3. Selecciona **Instalar desde ZIP**
-4. Selecciona el archivo ZIP descargado
-5. Haz clic en **Instalar complemento**
+## Usage
 
-## Uso
+### From the Processing Panel
 
-### Desde el Panel de Processing
+1. Open the **Processing Toolbox** (Processing → Toolbox)
+2. Expand the **Hydraulics** group
+3. Double click on **Variable Width Buffer**
 
-1. Abre el **Panel de Processing** (Procesado → Caja de herramientas)
-2. Busca **"Conduit Buffer"** o **"Buffer Dinámico de Conductos"**
-3. Expande el grupo **Hidráulica**
-4. Doble clic en **Buffer Dinámico de Conductos**
+### Parameters
 
-### Parámetros
+- **Input conduit layer**: Select your line layer with the conduits
+- **Width field (condwidth)**: Field that contains the conduit width
+- **Dimension unit**: Select whether your data is in millimeters or meters
+- **Wall thickness**: Wall thickness in meters (default: 0.15 m)
+- **Excavation width**: Excavation width in meters (default: 0.5 m)
+- **Export 3D DXF**: Enable to export 3DFACE entities for Civil 3D
+- **Output folder for DXF**: Select the destination folder for the DXF file
 
-- **Capa de conductos**: Selecciona tu capa de líneas con los conductos
-- **Campo de ancho**: Campo que contiene el ancho del conducto
-- **Campo de alto/diámetro**: Campo que contiene la altura o diámetro
-- **Unidad de las dimensiones**: Selecciona si tus datos están en milímetros o metros
-- **Factor de buffer**: Multiplicador para ajustar el tamaño (1.0 = tamaño normal)
-- **Buffers de salida**: Especifica dónde guardar el resultado
+### Example
 
-### Ejemplo
+If you have InfoWorks conduits with:
+- `condwidth` = 600 mm, `condheight` = 600 mm → **Circular**, buffer radius = 300 mm (0.3 m)
+- `condwidth` = 1800 mm, `condheight` = 600 mm → **Rectangular**, buffer radius = 900 mm (0.9 m)
 
-Si tienes conductos de InfoWorks con:
-- `condwidth` = 1800 (mm)
-- `condheight` = 600 (mm)
+## Output Layers
 
-El plugin generará un buffer rectangular con radio de 900mm (0.9m) del ancho.
+The plugin generates 4 output layers:
 
-Si el conducto es circular con:
-- `condwidth` = 600 (mm)
-- `condheight` = 600 (mm)
+| Layer | Description | Fields |
+|-------|-------------|--------|
+| **Conduits** | Polygon buffers around each conduit | id, tipo_secc, ancho_mm, alto_mm, diam_mm, longitud_m |
+| **Walls** | Wall polygons from conduit edge outward | id, espesor_m |
+| **Excavation** | Excavation buffers with hole | id, ancho_m |
+| **Total Width** | Complete solid polygon (no hole) | id, ancho_total_m |
 
-El plugin generará un buffer circular con radio de 300mm (0.3m).
+And optionally a DXF file (`conduits_3d.dxf`) with 3DFACE entities.
 
-## Campos de Salida
+## DXF Export — Civil 3D Workflow
 
-El plugin añade los siguientes campos a la capa de salida:
+1. Open the exported `conduits_3d.dxf` in Civil 3D
+2. **ConvertToSurface** - convert 3D faces to surfaces
+3. **Thicken** - add thickness to create 3D Solid
 
-- `TIPO_SECC`: Tipo de sección ("Circular" o "Rectangular")
-- `ANCHO_MM`: Ancho en milímetros
-- `ALTO_MM`: Alto/diámetro en milímetros
-- `DIM_M`: Dimensión principal en metros
-- `BUFFER_M`: Radio del buffer aplicado en metros
-- `LONG_M`: Longitud del conducto en metros
-- `AREA_M2`: Área del buffer en metros cuadrados
-- `DESCRIPCION`: Descripción legible (ej: "Ø 600 mm" o "1800 x 600 mm")
+The DXF contains two layers:
+- `CONDUITS_CIRCULAR` (color: red) - circular conduits as 16-segment cylinders
+- `CONDUITS_RECTANGULAR` (color: green) - rectangular conduits as triangulated boxes
 
-## Casos de Uso
+Z coordinates are interpolated along each conduit using `us_invert` and `ds_invert` values.
 
-- Visualización de redes de alcantarillado
-- Análisis de redes de agua potable
-- Planificación de excavaciones
-- Cálculo de áreas de afectación
-- Modelado hidráulico de redes de drenaje
+## Use Cases
 
-## Requisitos
+- Visualization of sewage networks
+- Water supply network analysis
+- Excavation planning
+- Impact area calculation
+- Hydraulic modeling of drainage networks
 
-- QGIS 3.0 o superior
-- Python 3.6 o superior
+## Requirements
 
-## Autor
+- QGIS 3.0 or higher
+- Python 3.6 or higher
+
+## Author
 
 **Michel Cueva & DTC**  
 **EPA - Escuela Peruana del Agua**
-- Empresa especializada en geomática, modelado hidráulico y diseño CAD
-- Lima, Perú
+epacursos@epa-edu.com
 
-## Licencia
+## License
 
-Este plugin es de código abierto y está disponible bajo licencia GPL v3.
+This plugin is open source and available under the GPL v3 license.
 
-## Soporte
+## Support
 
-Para reportar problemas o solicitar nuevas características, por favor contacta a epacursos@epa-edu.com
+To report issues or request new features, please contact epacursos@epa-edu.com
 
 ## Changelog
 
-### Versión 1.0 (2026-01-27)
-- Primera versión pública
-- Generación de buffers dinámicos
-- Detección automática de tipo de sección
-- Soporte para mm y metros
-- Factor de ajuste de buffer
-- Campos calculados de estadísticas
+### Version 2.0 (2026-02-03)
+- Added 3D DXF export with 3DFACE entities
+- Added wall and excavation polygon outputs
+- Added ConvertToSurface → Thicken workflow for Civil 3D
+- Native DXF R12 writing (no external dependencies)
+
+### Version 1.0 (2026-01-27)
+- First public version
+- Dynamic buffer generation
+- Automatic section type detection
+- Support for mm and meters
